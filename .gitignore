@@ -6,3 +6,4 @@ dist/
 bot_config.json
 scripts/masaad_session*
 scripts/.code_hash
+scripts/.env
