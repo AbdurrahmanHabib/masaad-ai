@@ -1,5 +1,5 @@
 import { Env, TelegramUpdate, AgentRole } from './types';
-import { AGENTS, getAgentConfig, getBotToken } from './agents/config';
+import { AGENTS, getAgentConfig, getBotToken, isAgentAvailable } from './agents/config';
 import { buildSystemPrompt, buildUserPrompt } from './agents/prompt';
 import { callLLM } from './llm/router';
 import { sendMessage } from './telegram/client';
@@ -116,7 +116,7 @@ export default {
 
 async function runAgent(env: Env, role: AgentRole): Promise<void> {
   const config = getAgentConfig(role);
-  if (!config) return;
+  if (!config || !isAgentAvailable(env, config)) return;
 
   const state = await getAgentState(env.DB, role);
   const recentMessages = await getRecentMessages(env.DB, 'hq', 10);

@@ -145,5 +145,10 @@ export function getAgentConfig(role: string): AgentConfig | undefined {
 }
 
 export function getBotToken(env: Env, config: AgentConfig): string {
-  return env[config.botTokenKey] as string;
+  return (env[config.botTokenKey] as string) || '';
+}
+
+export function isAgentAvailable(env: Env, config: AgentConfig): boolean {
+  const token = getBotToken(env, config);
+  return !!token && token.length > 10;
 }
