@@ -8,7 +8,7 @@ crons = ["*/15 * * * *"]
 [[d1_databases]]
 binding = "DB"
 database_name = "masaad-ai-db"
-database_id = "" # Set after: wrangler d1 create masaad-ai-db
+database_id = "045a916f-0882-4576-804f-32e79528c297"
 
 [vars]
 ENV = "prod"

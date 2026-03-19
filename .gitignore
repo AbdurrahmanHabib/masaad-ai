@@ -3,3 +3,6 @@ dist/
 .wrangler/
 .dev.vars
 *.log
+bot_config.json
+scripts/masaad_session*
+scripts/.code_hash
