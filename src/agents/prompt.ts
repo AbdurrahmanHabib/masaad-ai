@@ -1,29 +1,99 @@
 import { AgentConfig, AgentState } from '../types';
 
 const COMPANY_CONTEXT = `Masaad AI is a construction HR tech startup based in Dubai, UAE.
+Founded by Abdurrahman Habib (solo technical founder, self-taught full-stack engineer).
+Industry Advisor: Eng. Habibullah — owns Madinat Al Saada Aluminium & Glass Works LLC, the first enterprise client. 15+ years in UAE construction.
 
-PRODUCT: AI-powered photo-to-payroll platform for construction companies.
-- Site supervisors photograph handwritten timesheets
-- Multi-model AI (3-model voting) extracts attendance and overtime
-- Auto-calculates salary, OT (1.25x weekday, 1.5x weekend, 2.5x holiday), deductions, WPS
-- UAE labor law compliant (MOHRE, WPS integration)
+=== THE PRODUCT ===
+An AI-powered HRMS (Human Resource Management System) purpose-built for UAE construction companies.
+Live at: https://app.madinatalsaada.ae
+GitHub: https://github.com/AbdurrahmanHabib/hrmsv1
 
-TRACTION:
-- Live product managing 100+ workers across 10 construction sites
-- 3 companies on the platform (MAS, AJZ, MAJ)
-- 95%+ OCR accuracy with 3-model voting pipeline
-- 27 REST API endpoints, mobile app, WhatsApp bot integration
-- Zero external funding — built entirely by the founder
+CORE INNOVATION — WhatsApp Photo-to-Payroll Pipeline:
+1. Site supervisors take a photo of the handwritten paper timesheet at each construction site
+2. They send the photo to a WhatsApp group (one per site)
+3. A WhatsApp bot (Node.js/Baileys on Render) receives the image automatically
+4. Multi-model AI OCR pipeline processes the photo:
+   - Groq Llama 4 Scout (primary vision model)
+   - Google Gemini 2.5 Flash (verification model)
+   - 3-model voting system: models independently read each sheet, majority vote determines the result
+   - Re-verification step for disputed cells
+5. Extracted data: worker names, attendance (P/A/L), overtime hours, signatures
+6. Morning photo = attendance (Present/Absent/Leave), Evening photo = OT hours
+7. Auto-calculates salary with UAE labor law compliance:
+   - OT rates: 1.25x weekday, 1.5x weekend, 2.5x UAE public holidays
+   - Weekend differs by site: Saturday for Nad Al Sheba, Dubai South, Expo Valley; Sunday for all others
+   - Friday is a NORMAL working day (not weekend) in UAE construction
+8. Generates WPS (Wage Protection System) compliant payroll files
+9. Complete salary breakdown: basic + allowances + OT - deductions = net pay
 
-FOUNDER: Abdurrahman Habib — self-taught full-stack engineer, built the entire system solo
-ADVISOR: Eng. Habibullah — owns a construction company (first client), 15+ years UAE construction
+=== PLATFORM FEATURES ===
+- Employee Management: 90+ company workers across 3 companies (MAS: ~50, AJZ: ~25, MAJ: ~15)
+- Subcontractor Management: 18 subcontractor workers from 3 firms (Al Bab Al Dhaki, Hassan Miraj, Tauq Al Salam)
+- 10+ Active Project Sites: Factory, Marina Shores, Malta, Nad Al Sheba, Expo Valley, Dubai South, NASF, and more
+- Smart Excel Import: Drop any company's Excel timesheet file and auto-detect schema, columns, workers
+- Attendance Tracking: Daily per-site, with multi-site worker support
+- Salary & Payroll: Full salary computation, overtime breakdown, deduction management
+- Leave Management: Annual leave, sick leave, emergency leave with approval workflow
+- Project Cost Allocation: AI-powered proportional cost distribution across sites
+- Performance Reviews: Manager-driven review cycles
+- AI Chatbot: Natural language queries about HR data (powered by Groq Llama 3.3 70B)
+- Letter Generation: AI-generated offer letters, salary certificates, NOCs (via Groq API)
+- Mobile App: Capacitor-based native app with push notifications, 27 REST API endpoints
+- UAE Pass Integration: OAuth2 government ID verification + e-signing
+- Admin Dashboard: Real-time analytics, Chart.js visualizations, per-site breakdowns
+- Role-Based Access: Admin, Manager, Employee roles with Flask-Login
 
-TARGET MARKET: UAE construction companies with 50+ workers still using paper timesheets
-COMPETITORS: Bayzat (generic HR), ZenHR (generic HR), Darwinbox (enterprise HR), Excel/paper (most common)
-DIFFERENTIATOR: Only solution combining WhatsApp-native OCR + construction-specific HR in one platform
+=== TECH STACK ===
+- Backend: Python Flask monolith (~7,400 lines in app.py) + Blueprint modules
+- Database: SQLite3 with WAL mode, raw parameterized SQL (no ORM)
+- Frontend: Jinja2 templates + Bootstrap 5 + Bootstrap Icons + Chart.js
+- AI/ML: Groq (Llama 4 Scout, Llama 3.3 70B), Google Gemini 2.5 Flash, custom OCR pipeline
+- WhatsApp Bot: Node.js + Baileys library, hosted on Render
+- Mobile: Capacitor native wrapper, service worker for offline
+- Voice: Groq Whisper (STT) + MiniMax T2A v2 (TTS) for voice AI HR agent
+- Hosting: a2hosting shared cPanel (Python 3.9 CGI), Cloudflare DNS
+- Security: CSRF protection, brute force protection, CSP headers, session hardening, parameterized SQL
 
-WEBSITE: app.madinatalsaada.ae
-APPLICATIONS: Hub71 Initiate (Abu Dhabi), in5 Tech (Dubai)`;
+=== TRACTION & METRICS ===
+- LIVE in production since late 2025, processing real payroll monthly
+- 90+ company workers + 18 subcontractor workers actively managed
+- 10+ construction project sites tracked simultaneously
+- 3 separate companies (legal entities) on one platform
+- 95%+ OCR accuracy on handwritten Arabic/English timesheets
+- 27 REST API endpoints for mobile app
+- 88 forms with CSRF protection
+- Zero external funding — entire platform built solo by founder
+- Monthly payroll: ~AED 166,000 processed through the system
+
+=== BUSINESS MODEL ===
+- Target: UAE construction companies with 50+ workers still using paper timesheets and Excel
+- There are 15,000+ construction companies in UAE, most using paper/Excel for HR
+- Pricing: Per-worker-per-month SaaS (target AED 5-15/worker/month)
+- Revenue potential: A 200-worker company = AED 1,000-3,000/month
+- UAE construction market: $100B+ in active projects (Expo City, Dubai Urban Master Plan 2040)
+
+=== COMPETITIVE LANDSCAPE ===
+- Bayzat: Generic UAE HR/insurance platform. No construction features, no OCR, no site management.
+- ZenHR: Generic Arabic HR software. No construction, no WhatsApp, no photo import.
+- Darwinbox: Enterprise HR for large corporations. Too expensive and complex for construction SMEs.
+- Excel/Paper: The actual competitor. 90%+ of construction companies still use paper timesheets and Excel.
+- Masaad AI is the ONLY solution combining: WhatsApp-native OCR + construction-specific HR + multi-site management + UAE labor law compliance in one platform.
+
+=== ACCELERATOR APPLICATIONS ===
+- Hub71 Initiate (Abu Dhabi): Applied for office space, mentorship, network access, credibility
+- in5 Tech (Dubai): Applied for entrepreneur visa, trade license, co-working space, brand credibility
+- Target timeline: Registration by June 2026, 5 pilot customers by Q2, 15 customers by Q4
+- 12-month goal: AED 540K ARR, hire first engineer
+
+=== KEY DIFFERENTIATORS ===
+1. Built by someone who lived the problem — founder worked inside a construction company
+2. WhatsApp-native — meets workers where they already are
+3. Multi-model AI voting — not single-model OCR, but consensus-based accuracy
+4. Construction-specific — understands sites, trades, subcontractors, multi-company structures
+5. UAE labor law baked in — OT rates, WPS, MOHRE reporting, holiday calendars
+6. Zero-config Excel import — drop any construction company's Excel and it auto-detects the schema
+7. Live in production with real money flowing through it — not a demo or prototype`;
 
 export function buildSystemPrompt(config: AgentConfig): string {
   return `${config.style}
