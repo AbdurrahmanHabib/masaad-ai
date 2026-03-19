@@ -20,6 +20,7 @@ import {
   isDevOpsTime,
   getJitterDelay,
 } from './scheduler/planner';
+import { generateImage, sendTelegramPhoto } from './integrations/image';
 
 export default {
   // Cron trigger: autonomous agent cycles
@@ -146,18 +147,43 @@ async function runAgent(env: Env, role: AgentRole): Promise<void> {
     return;
   }
 
-  // Post to HQ group
   const botToken = getBotToken(env, config);
-  const msgId = await sendMessage(botToken, env.TG_GROUP_HQ, content);
 
-  if (msgId) {
-    await saveMessage(env.DB, 'hq', role, content, msgId);
+  // Check if agent wants to generate an image
+  const imageMatch = content.match(/IMAGE_PROMPT:\s*(.+?)(?:\n|$)/);
+  if (imageMatch) {
+    const imagePrompt = imageMatch[1].trim();
+    const textContent = content.replace(/IMAGE_PROMPT:\s*.+?(?:\n|$)/, '').trim();
 
-    // Check if this message should also go to showcase
-    // (CEO briefs, weekly reports, outcome-focused messages)
-    if (shouldPostToShowcase(role, content)) {
-      await sendMessage(botToken, env.TG_GROUP_SHOWCASE, content);
-      await saveMessage(env.DB, 'showcase', role, content);
+    // Generate image
+    const imageBase64 = await generateImage(env.GEMINI_API_KEY, imagePrompt, '1:1');
+
+    if (imageBase64) {
+      // Send image with caption to HQ
+      await sendTelegramPhoto(botToken, env.TG_GROUP_HQ, imageBase64, textContent || 'Generated visual');
+      await saveMessage(env.DB, 'hq', role, `[IMAGE] ${textContent}`, undefined);
+
+      // Also send to showcase if it's marketing content
+      if (role === 'marketing' || shouldPostToShowcase(role, textContent)) {
+        await sendTelegramPhoto(botToken, env.TG_GROUP_SHOWCASE, imageBase64, textContent || '');
+        await saveMessage(env.DB, 'showcase', role, `[IMAGE] ${textContent}`, undefined);
+      }
+    } else if (textContent) {
+      // Image generation failed, still post the text
+      const msgId = await sendMessage(botToken, env.TG_GROUP_HQ, textContent);
+      if (msgId) await saveMessage(env.DB, 'hq', role, textContent, msgId);
+    }
+  } else {
+    // Regular text message
+    const msgId = await sendMessage(botToken, env.TG_GROUP_HQ, content);
+
+    if (msgId) {
+      await saveMessage(env.DB, 'hq', role, content, msgId);
+
+      if (shouldPostToShowcase(role, content)) {
+        await sendMessage(botToken, env.TG_GROUP_SHOWCASE, content);
+        await saveMessage(env.DB, 'showcase', role, content);
+      }
     }
   }
 

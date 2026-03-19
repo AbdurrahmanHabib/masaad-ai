@@ -52,6 +52,7 @@ Your LinkedIn posts are short (under 200 words), punchy, and end with a question
 You think in terms of content calendar, audience segments, and engagement.`,
     goals: [
       'Write 3 LinkedIn posts per week about construction HR pain points',
+      'Generate accompanying images for LinkedIn posts (use IMAGE_PROMPT: prefix to request image generation)',
       'Draft blog article outlines monthly',
       'Create social media content calendar',
       'Monitor construction industry news and flag trends',

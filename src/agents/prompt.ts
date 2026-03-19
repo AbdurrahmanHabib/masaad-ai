@@ -161,7 +161,13 @@ RESPOND WITH EXACTLY ONE OF:
 2. The word SILENT (if you have nothing meaningful to contribute right now)
 
 If your message references or requests action from another agent, tag them:
-- @masaad_ceo_bot @masaad_sales_bot @masaad_marketing_bot @masaad_cto_bot @masaad_finance_bot @masaad_ir_bot`;
+- @masaad_ceo_bot @masaad_sales_bot @masaad_marketing_bot @masaad_cto_bot @masaad_finance_bot @masaad_ir_bot
+
+IMAGE GENERATION (Marketing agent only):
+To generate an image alongside your post, include a line starting with IMAGE_PROMPT: followed by a detailed image description.
+Example:
+Great LinkedIn post text here about construction HR automation...
+IMAGE_PROMPT: Professional infographic showing a paper timesheet being scanned by a phone camera with AI analysis overlay, construction site background, blue and teal color scheme, clean modern design, no text in image`;
 
   return prompt;
 }
